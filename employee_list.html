@@ -2,62 +2,22 @@
 <html>
 <head>
     <title>Employee List</title>
-    <style>
-        table {
-            width: 50%;
-            border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 18px;
-            text-align: left;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {background-color: #f5f5f5;}
-    </style>
 </head>
 <body>
-    <h1>Employee List</h1>
-
-    {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
-    {% else %}
-        <p>You are not logged in. <a href="{% url 'login' %}">Login</a> or <a href="{% url 'sign_up' %}">SignUp</a></p>
-    {% endif %}
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Salary</th>
-                <th>Mobile</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td>{{ employee.id }}</td>
-                <td>{{ employee.name }}</td>
-                <td>{{ employee.department }}</td>
-                <td>{{ employee.salary }}</td>
-                <td>{{ employee.mobile }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No employees found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% if user.is_authenticated and user.is_staff %}
-        <p><a href="{% url 'add_employee' %}">Add Employee</a></p>
+    <h2>Employee List</h2>
+    <ul>
+        {% for employee in employees %}
+            <li>
+                {{ employee.name }} - {{ employee.department }} - {{ employee.salary }} - {{ employee.mobile }}
+                {% if user.is_superuser %}  <!-- Show delete link only to admins -->
+                <a href="{% url 'delete_employee' employee.id %}">Delete</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% if user.is_superuser %}  <!-- Show add employee link only to admins -->
+    <a href="{% url 'add_employee' %}">Add New Employee</a>
     {% endif %}
 </body>
 </html>
