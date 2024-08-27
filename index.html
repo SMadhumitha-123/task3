@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Management</title>
+</head>
+<body>
+    <h1>Employee Management</h1>
+
+    {% if user.is_authenticated %}
+        <h2>Welcome, {{ user.username }}!</h2>
+        <a href="{% url 'logout' %}">Logout</a>
+        <hr>
+        <h3>Add Employee</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form_employee.as_p }}
+            <button type="submit" name="add_employee">Add Employee</button>
+        </form>
+
+        <hr>
+        <h3>Employee List</h3>
+        <ul>
+            {% for employee in employees %}
+                <li>
+                    {{ employee.name }} - {{ employee.department }} - ${{ employee.salary }} - {{ employee.mobile }}
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="employee_id" value="{{ employee.id }}">
+                        <button type="submit" name="delete_employee">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h3>Sign Up</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form_signup.as_p }}
+            <button type="submit" name="signup">Sign Up</button>
+        </form>
+
+        <hr>
+        <h3>Login</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form_login.as_p }}
+            <button type="submit" name="login">Login</button>
+        </form>
+    {% endif %}
+</body>
+</html>
